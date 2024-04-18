@@ -24,8 +24,9 @@ export class UserService {
     newUser.role = createUserDto.role;
     if (createUserDto.role === UserRole.ADMIN)
       newUser.approvalStatus = ApprovalStatus.APPROVED;
-    newUser.approvalStatus = ApprovalStatus.PENDING;
+    else newUser.approvalStatus = ApprovalStatus.PENDING;
     await this.userRepository.save(newUser);
+    return newUser;
   }
 
   async findAllUser() {
@@ -81,7 +82,7 @@ export class UserService {
   async approveUser(userId: number, status: ApprovalStatus) {
     const user = await this.findOneUser(userId);
     user.approvalStatus = status;
-    this.userRepository.save(user);
+    await this.userRepository.save(user);
     return 'Your status is updated';
   }
 }

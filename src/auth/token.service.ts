@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
+import { jwtSecret } from 'src/environment/environment';
 import { UserEntity } from 'src/user/entities/user.entity';
 import { UserService } from 'src/user/user.service';
 import { Repository } from 'typeorm';
@@ -28,7 +29,7 @@ export class TokenService {
       role: userData.role,
     };
 
-    const token = this.jwtService.sign(payload, {});
+    const token = this.jwtService.sign(payload, { secret: jwtSecret });
     await this.userRepository.update(userData.id, {
       jwtToken: token,
     });

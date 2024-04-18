@@ -47,7 +47,7 @@ export class UserController {
     @Body() createUserDto: CreateUserDto,
   ) {
     try {
-      const adminId = req.tokenData.id;
+      const adminId = req.user.id;
       const admin = await this.userService.findOneUser(adminId);
       if (admin.role !== UserRole.ADMIN)
         'You are not authorized to create User';
@@ -75,7 +75,7 @@ export class UserController {
   @ApiBearerAuth()
   async find(@Req() req: any) {
     try {
-      const userId = req.tokenData.id;
+      const userId = req.user.id;
       return await this.userService.findOneUser(userId);
     } catch (error) {
       return new InternalServerErrorException(error);
@@ -90,7 +90,7 @@ export class UserController {
     @Body() oldPasswordDto: OldPasswordDto,
   ) {
     try {
-      const userId = req.tokenData.id;
+      const userId = req.user.id;
       const user = await this.userService.findOneUser(userId);
       if (!user) return 'User not found';
       const hashedPassword = await this.userService.comparePasswords(
@@ -112,7 +112,7 @@ export class UserController {
     @Body() changePasswordDto: ChangePasswordDto,
   ) {
     try {
-      const userId = req.tokenData.id;
+      const userId = req.user.id;
       const user = await this.userService.findOneUser(userId);
       if (!user) return 'User not found';
       else if (changePasswordDto.changePasswordString !== user.tokenString)
@@ -134,7 +134,6 @@ export class UserController {
     name: 'userId',
     required: true,
     description: 'Enter UserId',
-    type: Number,
   })
   @ApiQuery({
     name: 'status',
@@ -147,7 +146,7 @@ export class UserController {
     @Query('status') status: ApprovalStatus,
   ) {
     try {
-      const adminId = req.tokenData.id;
+      const adminId = req.user.id;
       const user = await this.userService.findOneUser(adminId);
       if (user.role !== UserRole.ADMIN)
         return 'You are not authorized to approve the Users';
@@ -168,7 +167,7 @@ export class UserController {
   })
   async deleteUserByAdmin(@Req() req: any, @Param('userId') userId: number) {
     try {
-      const id = req.tokenData.id;
+      const id = req.user.id;
       const admin = await this.userService.findOneUser(id);
       if (admin.role !== UserRole.ADMIN)
         return 'You are not authorized to delete the user';

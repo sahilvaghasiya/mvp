@@ -33,7 +33,7 @@ export class ProductsController {
     @Body() createProductDto: CreateProductDto,
   ) {
     try {
-      const userId = req.tokenData.id;
+      const userId = req.user.id;
       const user = await this.userService.findOneUser(userId);
       if (user.role !== UserRole.ADMIN)
         return 'You are not authorized to create the product';
@@ -72,7 +72,7 @@ export class ProductsController {
     @Body() updateProductDto: UpdateProductDto,
   ) {
     try {
-      const userId = req.tokenData.id;
+      const userId = req.user.id;
       const user = await this.userService.findOneUser(userId);
       if (user.role !== UserRole.ADMIN)
         return 'You are not authorized to update the product';
@@ -87,7 +87,7 @@ export class ProductsController {
   @ApiBearerAuth()
   async deleteProduct(@Req() req: any, @Param('id') id: number) {
     try {
-      const userId = req.tokenData.id;
+      const userId = req.user.id;
       const user = await this.userService.findOneUser(userId);
       if (user.role !== UserRole.ADMIN)
         return 'You are not authorized to delete the product';

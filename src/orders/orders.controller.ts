@@ -33,7 +33,7 @@ export class OrdersController {
   @ApiBearerAuth()
   async placeOrder(@Req() req: any, @Body() placeOrderDto: PlaceOrderDto) {
     try {
-      const userId = req.tokenData.id;
+      const userId = req.user.id;
       const user = await this.userService.findOneUser(userId);
       if (!user) return 'User not Found';
       const product = await this.productService.findOneProduct(
@@ -51,7 +51,7 @@ export class OrdersController {
   @ApiBearerAuth()
   async findAllOrders(@Req() req: any) {
     try {
-      const userId = req.tokenData.id;
+      const userId = req.user.id;
       const user = await this.userService.findOneUser(userId);
       if (user.role !== UserRole.ADMIN) return 'Only Admin can see all orders';
       return this.ordersService.findAllOrders();
@@ -80,7 +80,7 @@ export class OrdersController {
   })
   async findOrderByUser(@Req() req: any, @Param('userId') userId: number) {
     try {
-      const id = req.tokenData.id;
+      const id = req.user.id;
       const user = await this.userService.findOneUser(id);
       if (user.role !== UserRole.ADMIN)
         return 'Only Admin can see all orders of user';
@@ -110,7 +110,7 @@ export class OrdersController {
     @Query('status') status: OrderStatus,
   ) {
     try {
-      const adminId = req.tokenData.id;
+      const adminId = req.user.id;
       const user = await this.userService.findOneUser(adminId);
       if (user.role !== UserRole.ADMIN)
         return 'You are not authorized to update order status';
